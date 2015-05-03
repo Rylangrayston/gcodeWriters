@@ -1,0 +1,24 @@
+to create a timelapse where the end video looks like purple neon highlighter has draw some text 
+do the folowing 
+
+
+1 slice a modle so that you get a gcode file
+2 open the gcode file from your slicer in a text editor and delete all but one layer
+3 change the name of your gcode file to layer.gcode 
+4 make sure layer.gcode and layerToSequence.py are in the same folder
+5 from the terminal type  python layerToSequence.py
+6 you will now have a file called ouput.gcode 
+
+6.5 edit the arduinoCameraControl.ino to have an exposure time greater than that of the time it take the printer to draw layer.gcode once. 
+
+7 next load arduinoCameraControl.ino onto an arduino and phisicaly conect pin 8 such that when it goes to 5 volts it holds the shutter of your cammera open 
+
+7.5 using git checkout tkpeachyprinter 
+branch no_audio 
+HEAD e84505cd356448daee56e4bffca0d2c19d4da8d9
+
+8 open the peach software with python peachyprintertools -d
+9 change your dripper setting to use the cammera z axix feature and ensure that the layer delay is about 1 second longer that the longest exposrue your cammera will do 
+
+
+
