@@ -28,7 +28,7 @@ for layer in range(1,totalCodesInModle,speed):
 	comment = "; " +  "Rylans Layer number " + str(layer) +'\n'
 	file.write(comment)	
 	print comment
-	file.write("G0 Z" + str(layer) + '\n')
+	file.write("G0 Z" + str(layer*.01) + '\n')
 
 file.close()
 
