@@ -4,6 +4,8 @@ do the folowing
 
 1 slice a modle so that you get a gcode file
 2 open the gcode file from your slicer in a text editor and delete all but one layer
+2.5 search for the letter Z and deleet all Z axis moves .. so deleet things like Z0.12 from all lines
+2.6 change the E value of the first and last code to be 0 so replace someing like E3.345 with E0.0 
 3 change the name of your gcode file to layer.gcode 
 4 make sure layer.gcode and layerToSequence.py are in the same folder
 5 from the terminal type  python layerToSequence.py
