@@ -1,5 +1,7 @@
 # test print with surface flow relive holes 
 
+baseWidth = 1
+baseHeight = 2.5
 
 #once upon a time rylan at peachy wanted to see if adding little holes 
 # to a print would alow the resin to flow into the center of the print 
@@ -9,18 +11,21 @@
 layersPermm = 100.0
 
 # the total height of the test print will be defined as 
-totalHeight =40.0 # in mm
+totalHeight =20.0 # in mm
+
 
 #the rate of flow alowed by a hole should grow proportionaly with the aria that is being printed that #layer. this could be rather complicated as there are fluid dynamics to be considerd, looking into the 
 # a flow calcuator for non presurized pipes could be valuble,  hydrolic radius/ weted parimiter and #time to alow for flow between layers could be calculated from the aria that must be filled with resin #for that layer. 
 # this is a first go and I will not be caluclating any of this for now, instead ill just write the hole #size to be a percentage of the wall size its in. It is expected that this hole will can not grow fast #enugh to fill larger arias with resin and at some size, filling an empty ocean would take days evan if #water came from all sides :) 
 
-maxWidth = 40.0  # the largest the print will get in the x and y 
+maxWidth = 20.0  # the largest the print will get in the x and y
+baseScaleFactor = baseWidth / maxWidth
+
 holeFactor = 0.33 # what percentage of one wall will be a hole
 HoleLength = maxWidth * holeFactor 
 
-holeHeight = 3 # the talest a hole will get before being healed 
-holeOverlapHeight = 1 # what distance in the z will the holes overlap
+holeHeight = .2 # the talest a hole will get before being healed 
+holeOverlapHeight = .03 # what distance in the z will the holes overlap
 
 holeHeight -= holeOverlapHeight
 layersPerHole = holeHeight * layersPermm
@@ -47,11 +52,11 @@ laserSpotDiameter = .5  #helpfull for making things overlap so they conect well
 layers = totalHeight * layersPermm
 code = ""
 
-currentLayer = 0
+currentLayer = 0.0
 
 scaleFactor = 1.0
 
-scaleCount = 0
+scaleCount = 0.0
 
 # G1 F9000.0 X6.59095492938 Y0.345417311203 E1.0 
 
@@ -158,16 +163,27 @@ def twoHoles(scaleChange):
 	global currentLayer
 	global scaleCount
 
-	for holeyLayer in range(1,int(layersPerHole),1):
+	for holeyLayer in range(1,int(layersPermm * holeOverlapHeight),1):
 		currentLayer += 1
 		scaleCount += scaleChange
 		scaleFactor = scaleCount / layers
 		file.write( twoHolesLayer(scale = scaleFactor) )
 		print(currentLayer)
+		print("------>",scaleCount)
 
 
 
+scaleCount = baseScaleFactor * layers
 
+
+while currentLayer < baseHeight * layersPermm  :
+	
+	leftHole( scaleChange = 0 )
+	twoHoles( scaleChange = 0 )
+	rightHole( scaleChange = 0 )
+	twoHoles( scaleChange = 0 )
+
+layerCount = 0
 
 while currentLayer < layers * .5 :
 
@@ -177,8 +193,7 @@ while currentLayer < layers * .5 :
 	twoHoles( scaleChange = 1 )
 
 
-while currentLayer < layers * 1 :
-
+while currentLayer < layers - baseWidth * layersPermm  -48:
 
 	leftHole( scaleChange = -1 ) 
 	twoHoles( scaleChange = -1)
