@@ -9,7 +9,7 @@
 layersPermm = 100.0
 
 # the total height of the test print will be defined as 
-totalHeight =20.0 # in mm
+totalHeight =40.0 # in mm
 
 #the rate of flow alowed by a hole should grow proportionaly with the aria that is being printed that #layer. this could be rather complicated as there are fluid dynamics to be considerd, looking into the 
 # a flow calcuator for non presurized pipes could be valuble,  hydrolic radius/ weted parimiter and #time to alow for flow between layers could be calculated from the aria that must be filled with resin #for that layer. 
@@ -19,7 +19,7 @@ maxWidth = 40.0  # the largest the print will get in the x and y
 holeFactor = 0.33 # what percentage of one wall will be a hole
 HoleLength = maxWidth * holeFactor 
 
-holeHeight = .2 # the talest a hole will get before being healed 
+holeHeight = 3 # the talest a hole will get before being healed 
 layersPerHole = holeHeight * layersPermm
 
 healExposureFactor = 2.5 #  how many more photons the aria over a hole will get when being healed
@@ -52,6 +52,80 @@ scaleCount = 0
 
 # G1 F9000.0 X6.59095492938 Y0.345417311203 E1.0 
 
+def leftHole(scale):
+
+	scaledWidth = maxWidth * scale 
+	scaledHoleLength = HoleLength *scale
+
+	code = ""
+
+	code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOff + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + healSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
+	return(code)
+	
+def rightHole(scale):
+
+	scaledWidth = maxWidth * scale 
+	scaledHoleLength = HoleLength *scale
+
+	code = ""
+
+	code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + healSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOff + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
+	return(code)
+	
+
+def twoHoles(scale):
+
+	scaledWidth = maxWidth * scale 
+	scaledHoleLength = HoleLength *scale
+
+	code = ""
+
+	code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOff + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
+ 	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOff + " \n"
+
+	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
+	return(code)
+	
+
 
 
 while currentLayer < layers/2:
@@ -62,30 +136,7 @@ while currentLayer < layers/2:
 		currentLayer += 1
 		scaleCount +=1
 		scaleFactor = scaleCount / layers
-		scaledWidth = maxWidth * scaleFactor 
-		scaledHoleLength = HoleLength *scaleFactor
-
-		code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOff + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + healSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
-		
-		
-
-
-		file.write(code)
-		code = ""
+		file.write( leftHole(scale = scaleFactor) )
 		print(currentLayer)
 
 
@@ -94,30 +145,8 @@ while currentLayer < layers/2:
 		currentLayer += 1
 		scaleCount +=1
 		scaleFactor = scaleCount / layers
-		scaledWidth = maxWidth * scaleFactor 
-		scaledHoleLength = HoleLength *scaleFactor
+		file.write( rightHole(scale = scaleFactor) )
 
-		code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + healSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOff + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
-		
-		
-
-
-		file.write(code)
-		code = ""
 		print(currentLayer)
 
 
@@ -131,29 +160,8 @@ while currentLayer < layers:
 		currentLayer += 1
 		scaleCount -=1
 		scaleFactor = scaleCount / layers
-		scaledWidth = maxWidth * scaleFactor 
-		scaledHoleLength = HoleLength *scaleFactor
-		code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOff + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + healSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
-		
-		
-
-
-		file.write(code)
-		code = ""
+		file.write( leftHole(scale = scaleFactor) )
+	
 		print(currentLayer)
 
 
@@ -162,30 +170,8 @@ while currentLayer < layers:
 		currentLayer += 1
 		scaleCount -=1
 		scaleFactor = scaleCount / layers
-		scaledWidth = maxWidth * scaleFactor 
-		scaledHoleLength = HoleLength *scaleFactor
-
-		code += "G1 " + "Z" + str(currentLayer/layersPermm) + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledWidth/2 ) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + healSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledWidth/2) + laserOn + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(scaledHoleLength/2) + laserOn + " \n"
-	 	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledHoleLength/2) + laserOff + " \n"
-
-		code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
-		
-		
-
-
-		file.write(code)
-		code = ""
+		file.write( rightHole(scale = scaleFactor) )
+	
 		print(currentLayer)
 
 
