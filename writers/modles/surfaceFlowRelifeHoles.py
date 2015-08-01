@@ -20,6 +20,9 @@ holeFactor = 0.33 # what percentage of one wall will be a hole
 HoleLength = maxWidth * holeFactor 
 
 holeHeight = 3 # the talest a hole will get before being healed 
+holeOverlapHeight = 1 # what distance in the z will the holes overlap
+
+holeHeight -= holeOverlapHeight
 layersPerHole = holeHeight * layersPermm
 
 healExposureFactor = 2.5 #  how many more photons the aria over a hole will get when being healed
@@ -52,7 +55,7 @@ scaleCount = 0
 
 # G1 F9000.0 X6.59095492938 Y0.345417311203 E1.0 
 
-def leftHole(scale):
+def leftHoleLayer(scale):
 
 	scaledWidth = maxWidth * scale 
 	scaledHoleLength = HoleLength *scale
@@ -76,7 +79,7 @@ def leftHole(scale):
 	code += "G1 " + drawSpeed + "X" + str(-scaledWidth/2) + " Y" + str(-scaledWidth/2) + laserOn + " \n"
 	return(code)
 	
-def rightHole(scale):
+def rightHoleLayer(scale):
 
 	scaledWidth = maxWidth * scale 
 	scaledHoleLength = HoleLength *scale
@@ -101,7 +104,7 @@ def rightHole(scale):
 	return(code)
 	
 
-def twoHoles(scale):
+def twoHolesLayer(scale):
 
 	scaledWidth = maxWidth * scale 
 	scaledHoleLength = HoleLength *scale
@@ -126,53 +129,61 @@ def twoHoles(scale):
 	return(code)
 	
 
-
-
-while currentLayer < layers/2:
-
-
-	for holeyLayer in range(1,int(layersPerHole),1):
-		
-		currentLayer += 1
-		scaleCount +=1
-		scaleFactor = scaleCount / layers
-		file.write( leftHole(scale = scaleFactor) )
-		print(currentLayer)
-
+def leftHole(scaleChange):
+	global currentLayer
+	global scaleCount
 
 	for holeyLayer in range(1,int(layersPerHole),1):
-		
 		currentLayer += 1
-		scaleCount +=1
+		scaleCount += scaleChange
 		scaleFactor = scaleCount / layers
-		file.write( rightHole(scale = scaleFactor) )
-
+		file.write( leftHoleLayer(scale = scaleFactor) )
 		print(currentLayer)
 
 
 
-
-while currentLayer < layers:
-
+def rightHole(scaleChange):
+	global currentLayer
+	global scaleCount
 
 	for holeyLayer in range(1,int(layersPerHole),1):
-		
 		currentLayer += 1
-		scaleCount -=1
+		scaleCount += scaleChange
 		scaleFactor = scaleCount / layers
-		file.write( leftHole(scale = scaleFactor) )
-	
+		file.write( rightHoleLayer(scale = scaleFactor) )
 		print(currentLayer)
 
 
+def twoHoles(scaleChange):
+	global currentLayer
+	global scaleCount
+
 	for holeyLayer in range(1,int(layersPerHole),1):
-		
 		currentLayer += 1
-		scaleCount -=1
+		scaleCount += scaleChange
 		scaleFactor = scaleCount / layers
-		file.write( rightHole(scale = scaleFactor) )
-	
+		file.write( twoHolesLayer(scale = scaleFactor) )
 		print(currentLayer)
+
+
+
+
+
+while currentLayer < layers * .5 :
+
+	leftHole( scaleChange = 1 )
+	twoHoles( scaleChange = 1 )
+	rightHole( scaleChange = 1 )
+	twoHoles( scaleChange = 1 )
+
+
+while currentLayer < layers * 1 :
+
+
+	leftHole( scaleChange = -1 ) 
+	twoHoles( scaleChange = -1)
+	rightHole( scaleChange = -1 )
+	twoHoles( scaleChange = -1 )
 
 
 
