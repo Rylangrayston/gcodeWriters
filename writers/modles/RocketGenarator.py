@@ -8,15 +8,15 @@
 # Hopfuly it will help us dicover how we can get gcode of this quality out of modles and slicers in the conventional 2d pirnting proces  
 # enjoy, Rylan Grayston:
 
-
+scaleFactor = 0.5
 import math
-file = open("RocketGenaroator.gcode", "w")
+file = open("RocketGenaroatortinay.gcode", "w")
 
 # tools for making gcode:
 
-bounds = 20.0
+bounds = 20.0 * scaleFactor
 mSpeed = 400.0  # speed to do moves
-dSpeed = 150.0  # speed to do draws, in mm per second
+dSpeed = 100 # speed to do draws, in mm per second
 step = 1  # skip N layers, use while codeing to make visulizatons faster
 moveSpeed = "F" + str(mSpeed * 60) + " " 
 drawSpeed = "F" + str(dSpeed * 60) + " "
@@ -30,22 +30,23 @@ laserSpotDiameter = .5  #helpfull for making things overlap so they conect well
 
 
 #modle spesific variables:
-engineRadius = 13.2/2.0 # in mm
-finRadius = 20.0 # in mm
-finHeight = 30.0
-totalHeight = 100.0
+drawRocketGuide = False
+engineRadius = (13.6/2.0) * scaleFactor # in mm
+finRadius = 20.0 * scaleFactor # in mm
+finHeight = 20.0 * scaleFactor
+totalHeight = 50.0 * scaleFactor
 noseConeHeight = .55 * totalHeight
-thrusterStartHeight = 6.0
-finBaceLength = 6
+thrusterStartHeight = 6.0 * scaleFactor
+finBaceLength = 6.0 * scaleFactor
 center = 0.0
 circleResolution = 100
 
-guideLength = 18.0
-guideStartHeight = thrusterStartHeight + 5.0
-guideRadius = 2.4
+guideLength = 5.0 * scaleFactor
+guideStartHeight = thrusterStartHeight + (5.0 * scaleFactor)
+guideRadius = 2.4 * scaleFactor
 
 thrusterSeed = 0.0
-thrusterSeedRate = .3
+thrusterSeedRate = .3 
 thrusterSeeded = False
 layers = totalHeight * layersPermm
 
@@ -132,7 +133,7 @@ for layer in range(1,int(layers), step):
 		coneRadius = engineRadius - engineRadius * (coneLayer/ (noseConeHeight * layersPermm) ) * (coneLayer/ (noseConeHeight * layersPermm) ) 
 		#print coneRadius		
 		file.write( circle(radius = coneRadius, resolution = circleResolution ) )
-	if layer > guideStartHeight * layersPermm and layer < (guideStartHeight + guideLength) * layersPermm and thrusterSeeded: #if its time to draw the rocket guide
+	if layer > guideStartHeight * layersPermm and layer < (guideStartHeight + guideLength) * layersPermm and thrusterSeeded and drawRocketGuide == True: #if its time to draw the rocket guide
 		file.write( circle(radius = guideRadius, resolution = circleResolution, posX = engineRadius+ guideRadius - laserSpotDiameter ) )
 		
 
